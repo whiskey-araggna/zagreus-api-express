@@ -1,48 +1,25 @@
-import { config } from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+import dotenv from 'dotenv';
+import fs from 'fs';
 
-// Fix __dirname untuk ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const loadEnv = () => {
-    const environment = process.env.NODE_ENV || "dev"; // Default ke dev
-
-    // Path ke folder environment di root project
-    const envPath = path.resolve(
-        __dirname,
-        "../environment/.env.dev" // Sesuaikan dengan struktur folder
-    );
-
-    // Debug: Tampilkan path yang digunakan
-    console.log("Loading env from:", envPath);
-
-    // Load file .env
-    const result = config({ path: envPath });
-
-    if (result.error) {
-        throw new Error(`❌ Gagal load .env: ${result.error.message}`);
+function loadEnv() {
+    if (process.env.NODE_ENV === 'production') {
+        // Production: tidak load file .env, langsung gunakan environment variables
+        console.log('⚠️ Production mode detected, skip loading .env file');
+        return;
     }
 
-    // Validasi variable wajib
-    const requiredVars = ["DB_HOST", "DB_USER", "DB_PASSWORD"];
-    requiredVars.forEach(varName => {
-        if (!process.env[varName]) {
-            throw new Error(`Missing ${varName} in .env file`);
+    const envPath = process.env.DOTENV_CONFIG_PATH || './environment/.env.dev';
+
+    if (fs.existsSync(envPath)) {
+        const result = dotenv.config({ path: envPath });
+        if (result.error) {
+            throw new Error(`❌ Gagal load .env: ${result.error.message}`);
+        } else {
+            console.log(`✅ Loaded env file: ${envPath}`);
         }
-    });
+    } else {
+        console.warn(`⚠️ File env tidak ditemukan di ${envPath}, lanjut tanpa file .env`);
+    }
+}
 
-    return {
-        NODE_ENV: environment,
-        PORT: process.env.PORT || 3000,
-        DB_HOST: process.env.DB_HOST,
-        DB_PORT: process.env.DB_PORT || 5432,
-        DB_USER: process.env.DB_USER,
-        DB_PASSWORD: process.env.DB_PASSWORD.toString(), // Konversi ke string
-        DB_NAME: process.env.DB_NAME || "zagportfolio",
-        PAGINATION_LIMIT: parseInt(process.env.PAGINATION_LIMIT) || 10
-    };
-};
-
-export const envConfig = loadEnv();
+loadEnv();
