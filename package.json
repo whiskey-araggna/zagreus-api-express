@@ -2,6 +2,7 @@
   "name": "zagreus-api-express",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "NODE_ENV=dev DOTENV_CONFIG_PATH=./environment/.env.dev nodemon -r dotenv/config server.js",
     "start": "node -r dotenv/config server.js",
