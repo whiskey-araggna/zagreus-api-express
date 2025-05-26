@@ -5,6 +5,8 @@ function loadEnv() {
     if (process.env.NODE_ENV === 'production') {
         // Production: tidak load file .env, langsung gunakan environment variables
         console.log('⚠️ Production mode detected, skip loading .env file');
+        console.log(process.env.DB_HOST);
+        console.log(process.env.DB_USER);
         return;
     }
 
