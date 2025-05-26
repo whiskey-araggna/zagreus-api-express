@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=dev DOTENV_CONFIG_PATH=./environment/.env.dev nodemon -r dotenv/config server.js",
-    "start": "node -r dotenv/config server.js",
+    "start": "node -r --trace-warnings server.js",
     "test:env": "NODE_ENV=dev DOTENV_CONFIG_PATH=./environment/.env.dev node -r dotenv/config src/config/env.js"
   },
   "keywords": [],
